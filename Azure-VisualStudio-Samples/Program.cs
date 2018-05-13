@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AzureSamples.Libs;
 
 namespace Azure_VisualStudio_Samples
 {
@@ -10,6 +11,7 @@ namespace Azure_VisualStudio_Samples
     {
         static void Main(string[] args)
         {
+            AzureStorageTable.CreateTable("customers");
         }
     }
 }

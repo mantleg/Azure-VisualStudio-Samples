@@ -1,6 +1,7 @@
 ﻿using Microsoft.Azure;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage.Table;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace AzureSamples.Libs
             var blogClient = storageAccount.CreateCloudBlobClient();
             var container = blogClient.GetContainerReference(containerName);
             container.CreateIfNotExists(Microsoft.WindowsAzure.Storage.Blob.BlobContainerPublicAccessType.Blob);
-            Console.ReadKey();
+
         }
 
         public static void UploadBlobToContainer(string containerName, string resourcePath, string ResourceName)
@@ -86,9 +87,21 @@ namespace AzureSamples.Libs
             return blobUris;
         }
 
-        public static class AzureStorageTable
-        {
+    }
 
+    public static class AzureStorageTable
+    {
+        public static void CreateTable(string tableName)
+        {
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
+            CloudConfigurationManager.GetSetting("StorageConnection"));
+
+            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+            CloudTable table = tableClient.GetTableReference(tableName);
+
+            table.CreateIfNotExists();
         }
+
+
     }
 }
