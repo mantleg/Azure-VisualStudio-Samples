@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Azure_VisualStudio_Samples.Entities
 {
-    class CustomerUS:TableEntity
+    public class CustomerUS:TableEntity
     {
         public string Name { get; set; }
         public string EMail { get; set; }
@@ -18,6 +18,11 @@ namespace Azure_VisualStudio_Samples.Entities
             this.EMail = email;
             this.PartitionKey = "US";
             this.RowKey = email;
+        }
+
+        public CustomerUS()
+        {
+
         }
     }
 }

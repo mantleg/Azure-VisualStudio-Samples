@@ -1,6 +1,8 @@
-﻿using Microsoft.Azure;
+﻿using Azure_VisualStudio_Samples.Entities;
+using Microsoft.Azure;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
 using System;
 using System.Collections.Generic;
@@ -91,7 +93,7 @@ namespace AzureSamples.Libs
 
     public static class AzureStorageTable
     {
-        public static void CreateTable(string tableName)
+        public static CloudTable CreateTable(string tableName)
         {
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
             CloudConfigurationManager.GetSetting("StorageConnection"));
@@ -100,8 +102,66 @@ namespace AzureSamples.Libs
             CloudTable table = tableClient.GetTableReference(tableName);
 
             table.CreateIfNotExists();
+            return table;
         }
 
+        public static void CreateCustomer(CloudTable table,CustomerUS customer)
+        {
+            TableOperation insert = TableOperation.Insert(customer);
+            table.Execute(insert);
+        }
 
+        public static string GetCustomer(CloudTable table, string partitionKey, string rowKey)
+        {
+            TableOperation retrive = TableOperation.Retrieve<CustomerUS>(partitionKey, rowKey);
+            var result=table.Execute(retrive);
+
+            if (result != null)
+                return ((CustomerUS)result.Result).Name;
+
+            throw new NullReferenceException();
+        }
+
+        public static List<String> GetAllCustomers(CloudTable table)
+        {
+            List<string> _customerName = new List<string>();
+
+            TableQuery<CustomerUS> query =  new TableQuery<CustomerUS>() 
+                .Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "US"));
+
+            foreach (CustomerUS customer in table.ExecuteQuery(query))
+            {
+                _customerName.Add(customer.Name);
+            }
+
+            return _customerName;
+           
+            
+        }
+   }
+
+    public static class AzureStorageQueue
+    {
+        public static CloudQueue CreateQueue(string queueName)
+        {
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
+            CloudConfigurationManager.GetSetting("StorageConnection"));
+
+            CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
+            CloudQueue queue = queueClient.GetQueueReference(queueName);
+
+            queue.CreateIfNotExists();
+            return queue;
+        }
+
+        public static void AddMessageToQueue(CloudQueue queue,string MessageText)
+        {
+            CloudQueueMessage message = new CloudQueueMessage(MessageText);
+            queue.AddMessage(message);
+        }
+
+        // Get Message
+        // Peek Message
+        // Delete Message
     }
 }

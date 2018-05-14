@@ -11,7 +11,16 @@ namespace Azure_VisualStudio_Samples
     {
         static void Main(string[] args)
         {
-            AzureStorageTable.CreateTable("customers");
+
+            // Create a new table object and add some customer data
+            //AzureStorageTable.CreateCustomer(
+            //    AzureStorageTable.CreateTable("customers"),
+            //    new Entities.CustomerUS("glenn", "glenn_mantle@hotmail.com"));
+
+            //Console.WriteLine(AzureStorageTable.GetCustomer(AzureStorageTable.CreateTable("customers"), "US", "glenn_mantle@hotmail.com"));
+            AzureStorageTable.GetAllCustomers(AzureStorageTable.CreateTable("customers"));
+                Console.ReadLine();
+
         }
     }
 }
